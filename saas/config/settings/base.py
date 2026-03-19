@@ -16,7 +16,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "users",
-    "organizations",
+    "organizations.apps.OrganizationsConfig",
     "projects",
 ]
 
