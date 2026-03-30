@@ -1,3 +1,42 @@
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from .models import Project,Task,Comment
+from .serializers import ProjectSerializer,TaskSerializer,CommentSerializer
+
+class ProjectViewSet(ModelViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Project.objects.filter(
+            organization__memberships__user=self.request.user
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
+
+
+class TaskViewSet(ModelViewSet):
+    queryset = Task.objects.all()   
+    serializer_class = TaskSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Task.objects.filter(
+            project__organization__memberships__user=self.request.user
+        )
+
+class CommentViewSet(ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Comment.objects.filter(
+            task__project__organization__memberships__user=self.request.user
+        )
