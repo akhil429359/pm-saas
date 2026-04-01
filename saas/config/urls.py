@@ -20,6 +20,7 @@ from rest_framework.routers import DefaultRouter
 
 from organizations.views import OrganizationViewSet
 from projects.views import ProjectViewSet, TaskViewSet, CommentViewSet
+from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView,)
 
 router = DefaultRouter()
 router.register("organizations", OrganizationViewSet)
@@ -30,6 +31,8 @@ router.register("comments", CommentViewSet,basename="comment")
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", include(router.urls)),
+    path("api/token/", TokenObtainPairView.as_view()),
+    path("api/token/refresh/", TokenRefreshView.as_view()),
 
     path("api-auth/", include("rest_framework.urls")),
 ]

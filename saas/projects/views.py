@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from .models import Project,Task,Comment
 from .serializers import ProjectSerializer,TaskSerializer,CommentSerializer
+from organizations.permissions import IsOrgAdmin
 
 class ProjectViewSet(ModelViewSet):
     queryset = Project.objects.all()
@@ -19,6 +20,10 @@ class ProjectViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
 
+    def get_permissions(self):
+        if self.action in ["create", "update", "destroy"]:
+            return [IsOrgAdmin()]
+        return [IsAuthenticated()]
 
 
 class TaskViewSet(ModelViewSet):
@@ -30,6 +35,11 @@ class TaskViewSet(ModelViewSet):
         return Task.objects.filter(
             project__organization__memberships__user=self.request.user
         )
+
+    def get_permissions(self):
+        if self.action in ["create", "update", "destroy"]:
+            return [IsOrgAdmin()]
+        return [IsAuthenticated()]
 
 class CommentViewSet(ModelViewSet):
     queryset = Task.objects.all()
