@@ -29,17 +29,19 @@ class ProjectViewSet(ModelViewSet):
 class TaskViewSet(ModelViewSet):
     queryset = Task.objects.all()   
     serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated]
-
+    # permission_classes = [IsAuthenticated]
+    filterset_fields = ["status", "assigned_to"]
+    search_fields = ["title", "description"]
+    ordering_fields = ["due_date", "created_at"]
     def get_queryset(self):
         return Task.objects.filter(
             project__organization__memberships__user=self.request.user
         )
 
-    def get_permissions(self):
-        if self.action in ["create", "update", "destroy"]:
-            return [IsOrgAdmin()]
-        return [IsAuthenticated()]
+    # def get_permissions(self):
+    #     if self.action in ["create", "update", "destroy"]:
+    #         return [IsOrgAdmin()]
+    #     return [IsAuthenticated()]
 
 class CommentViewSet(ModelViewSet):
     queryset = Task.objects.all()
