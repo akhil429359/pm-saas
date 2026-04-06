@@ -12,6 +12,7 @@ from .services import create_task
 
 class ProjectViewSet(ModelViewSet):
     serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -31,6 +32,7 @@ class ProjectViewSet(ModelViewSet):
 
 class TaskViewSet(ModelViewSet):
     serializer_class = TaskSerializer
+    queryset = Task.objects.all()
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -49,7 +51,7 @@ class TaskViewSet(ModelViewSet):
         return [IsAuthenticated()]
 
 class CommentViewSet(ModelViewSet):
-    queryset = Task.objects.all()
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated]
 
